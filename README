@@ -1,0 +1,93 @@
+
+==== NAME ====
+
+Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
+
+
+==== VERSION ====
+
+This describes version ``0.10'' of Posy::Plugin::Paginate.
+
+
+==== DESCRIPTION ====
+
+This plugin enables categories or chronological listsing with multiple
+entries in them, to be broken up into a number of pages, with previous and
+next links. Page length is defined by the 'num_entries' configuration
+setting; it will select entries depending on the 'page' parameter.
+
+This provides the following variables that can be used within your flavour
+files.
+
+``flow_paginate_prev_link''
+Contains a link to the previous page, and is empty if this link is not
+valid.
+
+``flow_paginate_next_link''
+Contains a link to the next page, and is empty if this link is not valid.
+
+
+==   Activation   ==
+
+This plugin needs to be added to both the plugins list and the actions list.
+
+In the actions list, 'filter_by_page' needs to go somewhere after
+``sort_entries'' and before ``head_render'', since the entries need to have
+been sorted, and the selection needs to be done before the head template is
+rendered, so that links could be put in the head part of the page if
+required.
+
+
+==   Configuration   ==
+
+This expects configuration settings in the $self->{config} hash, which, in
+the default Posy setup, can be defined in the main "config" file in the
+config directory.
+
+``paginate_prev_label''
+The label for the "prev" link. (default: '&lt;&lt;- prev')
+
+``paginate_next_label''
+The label for the "next" link. (default: 'next -&gt;&gt;')
+
+
+==== REQUIRES ====
+
+    Posy
+    Posy::Core
+
+    Test::More
+
+
+==== AUTHOR ====
+
+    Kathryn Andersen (RUBYKAT)
+    perlkat AT katspace dot com
+    http://www.katspace.com
+
+
+==== COPYRIGHT AND LICENCE ====
+
+Copyright (c) 2005 by Kathryn Andersen
+
+Parts of this taken from the original 'paginate' blosxom plugin copyright
+(c) 2003 by l.m.orchard http://www.decafbad.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
