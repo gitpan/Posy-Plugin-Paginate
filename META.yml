@@ -1,16 +1,16 @@
 --- #YAML:1.0
 name: Posy-Plugin-Paginate
-version: 0.20
+version: 0.21
 author:
   - Kathryn Andersen
 abstract: Posy plugin to paginate multiple entries.
 license: perl
 requires:
-  Posy: 0.72
+  Posy: 0.9
 build_requires:
   Test::More: 0
 provides:
   Posy::Plugin::Paginate:
     file: lib/Posy/Plugin/Paginate.pm
-    version: 0.20
-generated_by: Module::Build version 0.2605
+    version: 0.21
+generated_by: Module::Build version 0.2607
