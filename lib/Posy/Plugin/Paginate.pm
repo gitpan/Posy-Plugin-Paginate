@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.10> of Posy::Plugin::Paginate.
+This describes version B<0.20> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.10';
+our $VERSION = '0.20';
 
 =head1 SYNOPSIS
 
@@ -149,13 +149,21 @@ sub filter_by_page {
 	# set the prev link
 	$flow_state->{paginate_prev_link} = '';
 	my $label = '';
+	# preserve the current query string, sans page param
+	my $qstr = $ENV{QUERY_STRING};
+	$qstr =~ s/page=\d+//;
+	$qstr =~ s/^\&amp;//;
+	$qstr =~ s/^\&//;
+	$qstr =~ s/\&$//;
+	$qstr =~ s/\&amp;$//;
 	if ($page > 1)
 	{
 	    $label = $self->{config}->{paginate_prev_label};
 	    $flow_state->{paginate_prev_link} =
 		join('', '<a href="', $self->{url},
 		     $self->{path}->{info},
-		     '?page=', $page - 1, '">',
+		     '?page=', $page - 1,
+		     ($qstr ? "&amp;$qstr" : ''), '">',
 		     $label, '</a>');
 	}
 	# set the next link
@@ -166,7 +174,8 @@ sub filter_by_page {
 	    $flow_state->{paginate_next_link} =
 		join('', '<a href="', $self->{url},
 		     $self->{path}->{info},
-		     '?page=', $page + 1, '">',
+		     '?page=', $page + 1, 
+		     ($qstr ? "&amp;$qstr" : ''), '">',
 		     $label, '</a>');
 	}
     }
