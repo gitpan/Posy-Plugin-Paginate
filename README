@@ -6,7 +6,7 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 ==== VERSION ====
 
-This describes version ``0.21'' of Posy::Plugin::Paginate.
+This describes version ``0.22'' of Posy::Plugin::Paginate.
 
 
 ==== DESCRIPTION ====
@@ -25,6 +25,14 @@ valid.
 
 ``flow_paginate_next_link''
 Contains a link to the next page, and is empty if this link is not valid.
+
+``flow_paginate_page_list''
+Contains links to all the pages, labelled by number. For example, if there
+are four total pages, this would contain, by default,
+
+    [1] [2] [3] [4]
+
+See "paginate_pnum_prefix" for information on formatting this.
 
 
 ==   Activation   ==
@@ -49,6 +57,14 @@ The label for the "prev" link. (default: '&lt;&lt;- prev')
 
 ``paginate_next_label''
 The label for the "next" link. (default: 'next -&gt;&gt;')
+
+``paginate_pnum_prefix''
+When listing all the pages in $flow_paginate_page_list, each link is given a
+prefix and a suffix. The default prefix is '['.
+
+``paginate_pnum_suffix''
+The suffix for the links inside $flow_paginate_page_list. The default suffix
+is ']'.
 
 
 ==== INSTALLATION ====

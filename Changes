@@ -1,6 +1,13 @@
 Revision history for Posy-Plugin-Paginate
 =========================================
 
+0.22 Sat 09 April 2005
+----------------------
+
+  * (9 Apr 2005) added page-list
+  	Now one can use $flow_paginate_page_list to get a list of *all*
+  the pages, not just previous and next.
+
 0.21 Sun 06 February 2005
 -------------------------
 

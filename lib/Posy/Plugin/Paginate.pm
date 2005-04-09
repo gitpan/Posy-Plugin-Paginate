@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.21> of Posy::Plugin::Paginate.
+This describes version B<0.22> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 SYNOPSIS
 
@@ -49,6 +49,15 @@ Contains a link to the previous page, and is empty if this link is not valid.
 
 Contains a link to the next page, and is empty if this link is not valid.
 
+=item B<flow_paginate_page_list>
+
+Contains links to all the pages, labelled by number.
+For example, if there are four total pages, this would contain, by default,
+
+    [1] [2] [3] [4]
+
+See L</paginate_pnum_prefix> for information on formatting this.
+
 =back
 
 =head2 Activation
@@ -80,6 +89,16 @@ The label for the "prev" link.
 The label for the "next" link.
 (default: 'next -&gt;&gt;')
 
+=item B<paginate_pnum_prefix>
+
+When listing all the pages in $flow_paginate_page_list, each link is given
+a prefix and a suffix.  The default prefix is '['.
+
+=item B<paginate_pnum_suffix>
+
+The suffix for the links inside $flow_paginate_page_list.  The default
+suffix is ']'.
+
 =back
 
 =cut
@@ -102,6 +121,10 @@ sub init {
 	if (!defined $self->{config}->{paginate_prev_label});
     $self->{config}->{paginate_next_label} = 'next -&gt;&gt;'
 	if (!defined $self->{config}->{paginate_next_label});
+    $self->{config}->{paginate_pnum_prefix} = '['
+	if (!defined $self->{config}->{paginate_pnum_prefix});
+    $self->{config}->{paginate_pnum_suffix} = ']'
+	if (!defined $self->{config}->{paginate_pnum_suffix});
 } # init
 
 =head1 Flow Action Methods
@@ -166,6 +189,23 @@ sub filter_by_page {
 		     ($qstr ? "&amp;$qstr" : ''), '">',
 		     $label, '</a>');
 	}
+	# set the all-the-pages links
+	my $page_list = '';
+	if ($page > 1 || (($page+1) < $pages))
+	{
+	    for (my $i=1; $i <= $pages; $i++)
+	    {
+		$page_list .=
+		join('', ' ', $self->{config}->{paginate_pnum_prefix},
+		    '<a href="', $self->{url},
+		     $self->{path}->{info},
+		     '?page=', $i,
+		     ($qstr ? "&amp;$qstr" : ''), '">',
+		     $i, '</a>',
+		     $self->{config}->{paginate_pnum_suffix}, ' ');
+	    }
+	}
+	$flow_state->{paginate_page_list} = $page_list;
 	# set the next link
 	$flow_state->{paginate_next_link} = '';
 	if (($page+1) < $pages)
