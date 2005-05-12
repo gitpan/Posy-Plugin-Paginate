@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.22> of Posy::Plugin::Paginate.
+This describes version B<0.23> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,13 @@
 Revision history for Posy-Plugin-Paginate
 =========================================
 
+0.23 Thu 12 May 2005
+--------------------
+
+  * (12 May 2005) update Posy version
+
+  * (12 May 2005) add Makefile.PL
+
 0.22 Sat 09 April 2005
 ----------------------
 

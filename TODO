@@ -1,6 +1,12 @@
 TODO list for Posy-Plugin-Paginate
 ==================================
-  3. more tests
+  3. fix static-generation problems
+    Added:12/05/05, 19:51  Priority: veryhigh
+
+  4. indicate which page is the current page in the $page_list
+    Added:15/04/05, 07:58  Priority: high
+
+  5. more tests
     Added:15/01/05, 13:34  Priority: medium
 
 
