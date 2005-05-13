@@ -1,6 +1,19 @@
 Revision history for Posy-Plugin-Paginate
 =========================================
 
+0.24 Fri 13 May 2005
+--------------------
+
+  * (13 May 2005) current page
+  	Now indicates which page is the current page in the $page_list;
+  it no longer has a link, and the page-number is in bold.
+
+  * (13 May 2005) make things work better with hybrid sites
+  	Added 'paginate_url' config variable, and changed the paginate
+  links so that for hybrid sites, the CGI script will still be called,
+  even if the link is from a static page.
+  	This doesn't work with the Cannonical plugin, though.
+
 0.23 Thu 12 May 2005
 --------------------
 

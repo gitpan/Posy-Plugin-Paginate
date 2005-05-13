@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.23> of Posy::Plugin::Paginate.
+This describes version B<0.24> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 =head1 SYNOPSIS
 
@@ -60,6 +60,14 @@ See L</paginate_pnum_prefix> for information on formatting this.
 
 =back
 
+=head2 Cautions
+
+This plugin does not work if you have a hybrid site (partially
+static-generated, partially dynamic) and also use the
+Posy::Plugin:;Canonical plugin, since the Canonical plugin will redirect
+your query.  Also, if you have a hybrid site, don't forget to set
+the L</paginate_url> config variable.
+
 =head2 Activation
 
 This plugin needs to be added to both the plugins list and the actions
@@ -99,6 +107,15 @@ a prefix and a suffix.  The default prefix is '['.
 The suffix for the links inside $flow_paginate_page_list.  The default
 suffix is ']'.
 
+=item B<paginate_url>
+
+The URL to use for the pagination links.
+This defaults to the global $self->{url} value, but may
+need to be overridden for things like a hybrid static/dynamic site.
+This is because the global $self->{url} for static generation
+needs to hide the name of the script used to generate it,
+but this plugin needs to know the path to the CGI script.
+
 =back
 
 =cut
@@ -125,6 +142,8 @@ sub init {
 	if (!defined $self->{config}->{paginate_pnum_prefix});
     $self->{config}->{paginate_pnum_suffix} = ']'
 	if (!defined $self->{config}->{paginate_pnum_suffix});
+    $self->{config}->{paginate_url} = ''
+	if (!defined $self->{config}->{paginate_url});
 } # init
 
 =head1 Flow Action Methods
@@ -149,6 +168,9 @@ sub filter_by_page {
 
     if ($self->{config}->{num_entries})
     {
+	my $url = ($self->{config}->{paginate_url}
+		   ? $self->{config}->{paginate_url} : $self->{url});
+	my $path_param = $self->{path}->{info};
 	my $num_files = @{$flow_state->{entries}};
 	my $pages = ($num_files / $self->{config}->{num_entries}) + 1;
 	$flow_state->{pages} = $pages;
@@ -172,21 +194,30 @@ sub filter_by_page {
 	# set the prev link
 	$flow_state->{paginate_prev_link} = '';
 	my $label = '';
-	# preserve the current query string, sans page param
-	my $qstr = $ENV{QUERY_STRING};
-	$qstr =~ s/page=\d+//;
-	$qstr =~ s/^\&amp;//;
-	$qstr =~ s/^\&//;
-	$qstr =~ s/\&$//;
-	$qstr =~ s/\&amp;$//;
+
+	# preserve the current query, sans page param
+	# and path param (if any)
+	my @pfields = $self->param();
+	my @pvals = ();
+	foreach my $pf (@pfields)
+	{
+	    if ($pf ne 'page'
+		&& $pf ne 'path')
+	    {
+		push @pvals, $pf . '=' . $self->param($pf);
+	    }
+	}
+	my $qstr = join('&amp;', @pvals);
+
 	if ($page > 1)
 	{
 	    $label = $self->{config}->{paginate_prev_label};
 	    $flow_state->{paginate_prev_link} =
-		join('', '<a href="', $self->{url},
-		     $self->{path}->{info},
+		join('', '<a href="', $url,
 		     '?page=', $page - 1,
-		     ($qstr ? "&amp;$qstr" : ''), '">',
+		     ($qstr ? "&amp;$qstr" : ''),
+		     '&amp;path=', $path_param,
+		     '">',
 		     $label, '</a>');
 	}
 	# set the all-the-pages links
@@ -195,14 +226,25 @@ sub filter_by_page {
 	{
 	    for (my $i=1; $i <= $pages; $i++)
 	    {
-		$page_list .=
-		join('', ' ', $self->{config}->{paginate_pnum_prefix},
-		    '<a href="', $self->{url},
-		     $self->{path}->{info},
-		     '?page=', $i,
-		     ($qstr ? "&amp;$qstr" : ''), '">',
-		     $i, '</a>',
-		     $self->{config}->{paginate_pnum_suffix}, ' ');
+		if ($i == $page) # current page
+		{
+		    $page_list .=
+			join('', ' ', $self->{config}->{paginate_pnum_prefix},
+			     '<strong>', $i, '</strong>',
+			     $self->{config}->{paginate_pnum_suffix}, ' ');
+		}
+		else
+		{
+		    $page_list .=
+			join('', ' ', $self->{config}->{paginate_pnum_prefix},
+			     '<a href="', $url,
+			     '?page=', $i,
+			     ($qstr ? "&amp;$qstr" : ''),
+			     '&amp;path=', $path_param,
+			     '">',
+			     $i, '</a>',
+			     $self->{config}->{paginate_pnum_suffix}, ' ');
+		}
 	    }
 	}
 	$flow_state->{paginate_page_list} = $page_list;
@@ -212,10 +254,11 @@ sub filter_by_page {
 	{
 	    $label = $self->{config}->{paginate_next_label};
 	    $flow_state->{paginate_next_link} =
-		join('', '<a href="', $self->{url},
-		     $self->{path}->{info},
+		join('', '<a href="', $url,
 		     '?page=', $page + 1, 
-		     ($qstr ? "&amp;$qstr" : ''), '">',
+		     ($qstr ? "&amp;$qstr" : ''),
+		     '&amp;path=', $path_param,
+		     '">',
 		     $label, '</a>');
 	}
     }
