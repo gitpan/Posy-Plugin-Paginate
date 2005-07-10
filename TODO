@@ -1,8 +1,5 @@
 TODO list for Posy-Plugin-Paginate
 ==================================
-  4. indicate which page is the current page in the $page_list
-    Added:15/04/05, 07:58  Priority: high
-
   5. more tests
     Added:15/01/05, 13:34  Priority: medium
 

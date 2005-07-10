@@ -6,7 +6,7 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 ==== VERSION ====
 
-This describes version ``0.24'' of Posy::Plugin::Paginate.
+This describes version ``0.25'' of Posy::Plugin::Paginate.
 
 
 ==== DESCRIPTION ====
@@ -14,7 +14,8 @@ This describes version ``0.24'' of Posy::Plugin::Paginate.
 This plugin enables categories or chronological listsing with multiple
 entries in them, to be broken up into a number of pages, with previous and
 next links. Page length is defined by the 'num_entries' configuration
-setting; it will select entries depending on the 'page' parameter.
+setting; it will select entries depending on the 'page'
+($paginate_param_name) parameter.
 
 This provides the following variables that can be used within your flavour
 files.
@@ -60,6 +61,11 @@ required.
 This expects configuration settings in the $self->{config} hash, which, in
 the default Posy setup, can be defined in the main "config" file in the
 config directory.
+
+``paginate_param_name''
+Give the name of the "page" parameter. (default: 'page') This can be useful
+if you don't want it to conflict with a parameter of the same name. Set this
+to '' to disable pagination.
 
 ``paginate_prev_label''
 The label for the "prev" link. (default: '&lt;&lt;- prev')

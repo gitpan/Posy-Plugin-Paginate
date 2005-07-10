@@ -1,6 +1,15 @@
 Revision history for Posy-Plugin-Paginate
 =========================================
 
+0.25 Sun 10 July 2005
+---------------------
+
+  * (10 Jul 2005) added pageinate_param_name config
+  	The new paginate_param_name config variable enables one to change
+  the name of the parameter which is used to designate page numbers. The
+  default is 'page', but it can be useful to be able to change it if it
+  conflicts with something else.
+
 0.24 Fri 13 May 2005
 --------------------
 

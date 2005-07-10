@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.24> of Posy::Plugin::Paginate.
+This describes version B<0.25> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 SYNOPSIS
 
@@ -32,9 +32,10 @@ our $VERSION = '0.24';
 =head1 DESCRIPTION
 
 This plugin enables categories or chronological listsing with multiple
-entries in them, to be broken up into a number of pages, with previous and
-next links.  Page length is defined by the 'num_entries' configuration
-setting; it will select entries depending on the 'page' parameter.
+entries in them, to be broken up into a number of pages, with previous
+and next links.  Page length is defined by the 'num_entries'
+configuration setting; it will select entries depending on the 'page'
+($paginate_param_name) parameter.
 
 This provides the following variables that can be used within your
 flavour files.
@@ -87,6 +88,13 @@ file in the config directory.
 
 =over 
 
+=item B<paginate_param_name>
+
+Give the name of the "page" parameter. (default: 'page')
+This can be useful if you don't want it to conflict with a parameter
+of the same name.
+Set this to '' to disable pagination.
+
 =item B<paginate_prev_label>
 
 The label for the "prev" link.
@@ -134,6 +142,8 @@ sub init {
     $self->SUPER::init();
 
     # set defaults
+    $self->{config}->{paginate_param_name} = 'page'
+	if (!defined $self->{config}->{paginate_param_name});
     $self->{config}->{paginate_prev_label} = '&lt;&lt;- prev'
 	if (!defined $self->{config}->{paginate_prev_label});
     $self->{config}->{paginate_next_label} = 'next -&gt;&gt;'
@@ -154,7 +164,7 @@ Methods implementing actions.
 
 $self->filter_by_page($flow_state);
 
-Select entries by looking at the 'page' parameter.
+Select entries by looking at the $paginate_param_name parameter.
 Assumes that $flow_state->{entries} has already been
 populated AND sorted; updates it.
 
@@ -166,16 +176,18 @@ sub filter_by_page {
     my $self = shift;
     my $flow_state = shift;
 
-    if ($self->{config}->{num_entries})
+    if ($self->{config}->{num_entries}
+	&& $self->{config}->{paginate_param_name})
     {
 	my $url = ($self->{config}->{paginate_url}
 		   ? $self->{config}->{paginate_url} : $self->{url});
+	my $page_param = $self->{config}->{paginate_param_name};
 	my $path_param = $self->{path}->{info};
 	my $num_files = @{$flow_state->{entries}};
 	my $pages = ($num_files / $self->{config}->{num_entries}) + 1;
 	$flow_state->{pages} = $pages;
 	# Make sure the page number param is in the valid range;
-	$self->param('page') =~ /(\d+)/;
+	$self->param($self->{config}->{paginate_param_name}) =~ /(\d+)/;
 	my $page = $1;
 	$page ||= 1;
 	$flow_state->{page} = $page;
@@ -201,7 +213,7 @@ sub filter_by_page {
 	my @pvals = ();
 	foreach my $pf (@pfields)
 	{
-	    if ($pf ne 'page'
+	    if ($pf ne $page_param
 		&& $pf ne 'path')
 	    {
 		push @pvals, $pf . '=' . $self->param($pf);
@@ -214,7 +226,7 @@ sub filter_by_page {
 	    $label = $self->{config}->{paginate_prev_label};
 	    $flow_state->{paginate_prev_link} =
 		join('', '<a href="', $url,
-		     '?page=', $page - 1,
+		     "?$page_param=", $page - 1,
 		     ($qstr ? "&amp;$qstr" : ''),
 		     '&amp;path=', $path_param,
 		     '">',
@@ -238,7 +250,7 @@ sub filter_by_page {
 		    $page_list .=
 			join('', ' ', $self->{config}->{paginate_pnum_prefix},
 			     '<a href="', $url,
-			     '?page=', $i,
+			     "?$page_param=", $i,
 			     ($qstr ? "&amp;$qstr" : ''),
 			     '&amp;path=', $path_param,
 			     '">',
@@ -255,7 +267,7 @@ sub filter_by_page {
 	    $label = $self->{config}->{paginate_next_label};
 	    $flow_state->{paginate_next_link} =
 		join('', '<a href="', $url,
-		     '?page=', $page + 1, 
+		     "?$page_param=", $page + 1, 
 		     ($qstr ? "&amp;$qstr" : ''),
 		     '&amp;path=', $path_param,
 		     '">',
