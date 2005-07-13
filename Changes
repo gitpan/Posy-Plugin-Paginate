@@ -1,6 +1,14 @@
 Revision history for Posy-Plugin-Paginate
 =========================================
 
+0.2501 Wed 13 July 2005
+-----------------------
+
+  * (13 Jul 2005) pagination link fix
+  	Now only give the path=/path/to/page parameter in the links generated
+  by pagination if paginate_url is given; otherwise put the path in the
+  URL part.  This is because it didn't always work the other way.
+
 0.25 Sun 10 July 2005
 ---------------------
 

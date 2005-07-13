@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.25> of Posy::Plugin::Paginate.
+This describes version B<0.2501> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.25';
+our $VERSION = '0.2501';
 
 =head1 SYNOPSIS
 
@@ -179,10 +179,10 @@ sub filter_by_page {
     if ($self->{config}->{num_entries}
 	&& $self->{config}->{paginate_param_name})
     {
-	my $url = ($self->{config}->{paginate_url}
-		   ? $self->{config}->{paginate_url} : $self->{url});
-	my $page_param = $self->{config}->{paginate_param_name};
 	my $path_param = $self->{path}->{info};
+	my $full_url = ($self->{config}->{paginate_url}
+		   ? $self->{config}->{paginate_url} : $self->{url} . $path_param);
+	my $page_param = $self->{config}->{paginate_param_name};
 	my $num_files = @{$flow_state->{entries}};
 	my $pages = ($num_files / $self->{config}->{num_entries}) + 1;
 	$flow_state->{pages} = $pages;
@@ -224,13 +224,25 @@ sub filter_by_page {
 	if ($page > 1)
 	{
 	    $label = $self->{config}->{paginate_prev_label};
-	    $flow_state->{paginate_prev_link} =
-		join('', '<a href="', $url,
-		     "?$page_param=", $page - 1,
-		     ($qstr ? "&amp;$qstr" : ''),
-		     '&amp;path=', $path_param,
-		     '">',
-		     $label, '</a>');
+	    if ($self->{config}->{paginate_url})
+	    {
+		$flow_state->{paginate_prev_link} =
+		    join('', '<a href="', $full_url,
+			 "?$page_param=", $page - 1,
+			 ($qstr ? "&amp;$qstr" : ''),
+			 '&amp;path=', $path_param,
+			 '">',
+			 $label, '</a>');
+	    }
+	    else
+	    {
+		$flow_state->{paginate_prev_link} =
+		    join('', '<a href="', $full_url,
+			 "?$page_param=", $page - 1,
+			 ($qstr ? "&amp;$qstr" : ''),
+			 '">',
+			 $label, '</a>');
+	    }
 	}
 	# set the all-the-pages links
 	my $page_list = '';
@@ -247,15 +259,29 @@ sub filter_by_page {
 		}
 		else
 		{
-		    $page_list .=
-			join('', ' ', $self->{config}->{paginate_pnum_prefix},
-			     '<a href="', $url,
-			     "?$page_param=", $i,
-			     ($qstr ? "&amp;$qstr" : ''),
-			     '&amp;path=', $path_param,
-			     '">',
-			     $i, '</a>',
-			     $self->{config}->{paginate_pnum_suffix}, ' ');
+		    if ($self->{config}->{paginate_url})
+		    {
+			$page_list .=
+			    join('', ' ', $self->{config}->{paginate_pnum_prefix},
+				 '<a href="', $full_url,
+				 "?$page_param=", $i,
+				 ($qstr ? "&amp;$qstr" : ''),
+				 '&amp;path=', $path_param,
+				 '">',
+				 $i, '</a>',
+				 $self->{config}->{paginate_pnum_suffix}, ' ');
+		    }
+		    else
+		    {
+			$page_list .=
+			    join('', ' ', $self->{config}->{paginate_pnum_prefix},
+				 '<a href="', $full_url,
+				 "?$page_param=", $i,
+				 ($qstr ? "&amp;$qstr" : ''),
+				 '">',
+				 $i, '</a>',
+				 $self->{config}->{paginate_pnum_suffix}, ' ');
+		    }
 		}
 	    }
 	}
@@ -265,13 +291,25 @@ sub filter_by_page {
 	if (($page+1) < $pages)
 	{
 	    $label = $self->{config}->{paginate_next_label};
-	    $flow_state->{paginate_next_link} =
-		join('', '<a href="', $url,
-		     "?$page_param=", $page + 1, 
-		     ($qstr ? "&amp;$qstr" : ''),
-		     '&amp;path=', $path_param,
-		     '">',
-		     $label, '</a>');
+	    if ($self->{config}->{paginate_url})
+	    {
+		$flow_state->{paginate_next_link} =
+		    join('', '<a href="', $full_url,
+			 "?$page_param=", $page + 1, 
+			 ($qstr ? "&amp;$qstr" : ''),
+			 '&amp;path=', $path_param,
+			 '">',
+			 $label, '</a>');
+	    }
+	    else
+	    {
+		$flow_state->{paginate_next_link} =
+		    join('', '<a href="', $full_url,
+			 "?$page_param=", $page + 1, 
+			 ($qstr ? "&amp;$qstr" : ''),
+			 '">',
+			 $label, '</a>');
+	    }
 	}
     }
 } # filter_by_page
