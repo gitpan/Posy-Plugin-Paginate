@@ -1,6 +1,15 @@
 Revision history for Posy-Plugin-Paginate
 =========================================
 
+0.2502 Thu 04 August 2005
+-------------------------
+
+  * (4 Aug 2005) bugfix for parameters
+  	Problem when running this with InfoFind; it was losing all but the
+  first value for the info_sort parameter (because it wasn't taking account
+  of multi-valued parameters) when building the next,prev and page links.
+  This is now fixed.
+
 0.2501 Wed 13 July 2005
 -----------------------
 

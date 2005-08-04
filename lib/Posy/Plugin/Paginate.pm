@@ -7,11 +7,11 @@ Posy::Plugin::Paginate - Posy plugin to paginate multiple entries.
 
 =head1 VERSION
 
-This describes version B<0.2501> of Posy::Plugin::Paginate.
+This describes version B<0.2502> of Posy::Plugin::Paginate.
 
 =cut
 
-our $VERSION = '0.2501';
+our $VERSION = '0.2502';
 
 =head1 SYNOPSIS
 
@@ -216,7 +216,12 @@ sub filter_by_page {
 	    if ($pf ne $page_param
 		&& $pf ne 'path')
 	    {
-		push @pvals, $pf . '=' . $self->param($pf);
+		# some parameters have multiple values
+		my (@ppv) = $self->param($pf);
+		foreach my $pv (@ppv)
+		{
+		    push @pvals, $pf . '=' . $pv;
+		}
 	    }
 	}
 	my $qstr = join('&amp;', @pvals);

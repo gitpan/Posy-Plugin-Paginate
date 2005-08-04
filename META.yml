@@ -1,6 +1,6 @@
 ---
 name: Posy-Plugin-Paginate
-version: 0.2501
+version: 0.2502
 author:
   - Kathryn Andersen
 abstract: Posy plugin to paginate multiple entries.
@@ -12,5 +12,5 @@ build_requires:
 provides:
   Posy::Plugin::Paginate:
     file: lib/Posy/Plugin/Paginate.pm
-    version: 0.2501
+    version: 0.2502
 generated_by: Module::Build version 0.2611
